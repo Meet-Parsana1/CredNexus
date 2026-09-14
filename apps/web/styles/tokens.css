@@ -1,0 +1,14 @@
+:root {
+  /* Brand Tokens - Locked */
+  --crednexus-navy: #0F2747;
+  --crednexus-royal: #1D4ED8;
+  --crednexus-emerald: #15803D;
+  --crednexus-saffron: #F59E0B;
+  --crednexus-bg: #F8FAFC;
+  --crednexus-surface: #FFFFFF;
+  --crednexus-border: #E2E8F0;
+
+  /* Spacing Tokens */
+  --radius-card: 16px;
+  --radius-container: 24px;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "crednexus-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CredNexus - AI-Driven Scheme Matching, Financial Calculator & Channel Partner Locator for Marginalized Entrepreneurs",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm --workspace=apps/web run dev",
+    "build": "npm --workspace=apps/web run build",
+    "start": "npm --workspace=apps/web run start",
+    "test": "node --test tests/unit/*.test.mjs"
+  },
+  "keywords": [
+    "fintech",
+    "sih2026",
+    "ai-matching",
+    "multilingual",
+    "concessional-loans"
+  ],
+  "author": "Team Brainwired",
+  "license": "UNLICENSED"
+}

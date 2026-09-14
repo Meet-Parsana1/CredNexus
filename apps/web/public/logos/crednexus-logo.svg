@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" width="240" height="50" fill="none">
+  <!-- Brand Mark Placeholder -->
+  <rect x="2" y="5" width="40" height="40" rx="10" fill="#0F2747" />
+  <path d="M14 25 C14 18, 22 17, 28 20 C24 23, 20 25, 20 29 C20 33, 26 34, 30 31" stroke="#F8FAFC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="28" cy="20" r="3" fill="#1D4ED8" />
+  <circle cx="22" cy="30" r="3" fill="#15803D" />
+  <circle cx="32" cy="26" r="2.5" fill="#F59E0B" />
+  
+  <!-- Wordmark -->
+  <text x="54" y="32" font-family="Manrope, Inter, sans-serif" font-size="24" font-weight="800" fill="#0F2747" letter-spacing="-0.5">Cred<tspan fill="#1D4ED8">Nexus</tspan></text>
+  <text x="56" y="44" font-family="Inter, sans-serif" font-size="8.5" font-weight="600" fill="#64748B" letter-spacing="1.2">BRIDGING SCHEMES &amp; PARTNERS</text>
+</svg>
