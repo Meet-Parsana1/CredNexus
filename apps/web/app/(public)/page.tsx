@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
-  Sparkles, 
   ArrowRight, 
   Calculator, 
   MapPin, 
   ShieldCheck, 
   CheckCircle2, 
-  TrendingUp, 
   HelpCircle, 
   BookOpen, 
   Users, 
@@ -17,7 +16,12 @@ import {
   Globe2, 
   Coins,
   ChevronRight,
-  ArrowUpRight
+  ArrowUpRight,
+  Search,
+  Layers,
+  Percent,
+  Compass,
+  FileCheck
 } from 'lucide-react';
 import { useLanguage } from '../../lib/i18n/context';
 import { Button } from '../../components/ui/Button';
@@ -25,367 +29,414 @@ import { Badge } from '../../components/ui/Badge';
 import { DataFreshnessIndicator } from '../../components/ui/DataFreshnessIndicator';
 import { SEEDED_SCHEMES } from '../../lib/data';
 import { calculateLoanRepayment, formatINR } from '../../lib/engines/calculator';
+import { SchemeCategory } from '../../lib/types';
 
 export default function HomePage() {
   const { t } = useLanguage();
+  const router = useRouter();
 
-  // Quick interactive calculator teaser on the homepage
-  const [quickAmount, setQuickAmount] = useState(140000);
-  const [quickTenure, setQuickTenure] = useState(36);
+  // Interactive "Find My Scheme" workflow query state
+  const [selectedPurpose, setSelectedPurpose] = useState<SchemeCategory | 'any'>('business');
+  const [selectedAmount, setSelectedAmount] = useState<number>(120000);
+  const [customAmountText, setCustomAmountText] = useState<string>('');
+
+  // Quick interactive calculator section state
+  const [calcAmount, setCalcAmount] = useState<number>(140000);
+  const [calcTenure, setCalcTenure] = useState<number>(36);
+  const [calcMoratorium, setCalcMoratorium] = useState<number>(3);
+
   const quickCalc = calculateLoanRepayment({
-    principal: quickAmount,
+    principal: calcAmount,
     interestRatePercent: 6.5,
-    tenureMonths: quickTenure,
-    moratoriumMonths: 3,
+    tenureMonths: calcTenure,
+    moratoriumMonths: calcMoratorium,
   });
 
+  const handleLaunchRecommender = () => {
+    const amountToUse = customAmountText ? Number(customAmountText.replace(/[^0-9]/g, '')) || selectedAmount : selectedAmount;
+    router.push(`/recommend?purpose=${selectedPurpose}&amount=${amountToUse}`);
+  };
+
+  const purposeOptions: { id: SchemeCategory | 'any'; label: string; sub: string }[] = [
+    { id: 'business', label: 'Start or Grow Business', sub: 'Mudra & Enterprise Loans' },
+    { id: 'microfinance', label: 'Micro-Credit & Artisan', sub: 'Self-Help Groups & Individuals ≤ ₹1.4L' },
+    { id: 'term_loan', label: 'Medium Term Loan', sub: 'Capital Assets & Machinery ≤ ₹50L' },
+    { id: 'education', label: 'Higher Education', sub: 'Domestic & Overseas Professional Studies' },
+    { id: 'green_sanitation', label: 'Green & Sanitation', sub: 'Mechanized Equipment & Clean Tech' },
+    { id: 'any', label: 'Explore All Types', sub: 'Full Concessional Spectrum' },
+  ];
+
+  const capitalPresets = [
+    { label: '₹50,000', value: 50000 },
+    { label: '₹1,20,000', value: 120000 },
+    { label: '₹3,00,000', value: 300000 },
+    { label: '₹5,00,000', value: 500000 },
+    { label: '₹15,00,000', value: 1500000 },
+    { label: '₹50,00,000', value: 5000000 },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-blue-50/40 pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-slate-200">
+    <div className="flex flex-col min-h-screen bg-slate-50">
+      {/* =========================================================================
+          1. EDITORIAL HERO SECTION — FULL-WIDTH ASYMMETRIC PRODUCT INTERFACE
+          ========================================================================= */}
+      <section className="relative bg-white border-b border-slate-200 pt-10 pb-16 lg:pt-16 lg:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6 text-start">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-royal-50 border border-royal-200 text-royal-700 text-xs font-semibold shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-royal-600" />
-                <span>{t('hero.badge')}</span>
-              </div>
-
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-navy-800 tracking-tight leading-[1.15]">
-                {t('hero.title')}
-              </h1>
-
-              <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
-                {t('hero.subtitle')}
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                <Link href="/recommend">
-                  <Button size="lg" variant="primary" icon={<Sparkles className="w-4 h-4" />}>
-                    {t('hero.ctaFind')}
-                  </Button>
-                </Link>
-                <Link href="/schemes">
-                  <Button size="lg" variant="outline" icon={<ArrowRight className="w-4 h-4" />}>
-                    {t('hero.ctaExplore')}
-                  </Button>
-                </Link>
-                <Link href="/calculator">
-                  <Button size="lg" variant="ghost" icon={<Calculator className="w-4 h-4 text-royal-600" />}>
-                    {t('nav.calculator')}
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Stats Bar */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/80">
-                <div>
-                  <div className="text-xl sm:text-2xl font-display font-extrabold text-navy-800 font-tabular">
-                    {t('hero.stat1')}
-                  </div>
-                  <div className="text-xs text-slate-500 font-medium">
-                    {t('hero.stat1Label')}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-display font-extrabold text-royal-600 font-tabular">
-                    {t('hero.stat2')}
-                  </div>
-                  <div className="text-xs text-slate-500 font-medium">
-                    {t('hero.stat2Label')}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-display font-extrabold text-emerald-700 font-tabular">
-                    {t('hero.stat3')}
-                  </div>
-                  <div className="text-xs text-slate-500 font-medium">
-                    {t('hero.stat3Label')}
-                  </div>
-                </div>
-              </div>
+          {/* Eyebrow / Trust Indicator */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
+            <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-600" />
+              <span className="uppercase tracking-wider font-bold text-navy-900">CredNexus</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-600">Sovereign Concessional Credit Infrastructure</span>
+              <span className="text-slate-300 hidden sm:inline">|</span>
+              <span className="text-slate-500 hidden sm:inline">MoSJE &amp; Central Apex Corporations</span>
             </div>
-
-            {/* Right Card / Interactive Preview */}
-            <div className="lg:col-span-5">
-              <div className="relative rounded-2xl bg-white p-6 shadow-elevated border border-slate-200">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                      Live Matching Engine
-                    </span>
-                  </div>
-                  <Badge variant="royal" size="sm">Rule-Driven &bull; Deterministic</Badge>
-                </div>
-
-                <div className="mt-5 space-y-4 text-xs">
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 space-y-1.5">
-                    <div className="flex justify-between text-slate-500">
-                      <span>Persona Case:</span>
-                      <span className="font-semibold text-slate-700">Marginalized Artisan / Trader</span>
-                    </div>
-                    <div className="flex justify-between text-slate-500">
-                      <span>Project Capital:</span>
-                      <span className="font-bold text-navy-800">₹1,20,000</span>
-                    </div>
-                    <div className="flex justify-between text-slate-500">
-                      <span>Family Income:</span>
-                      <span className="font-semibold text-slate-700">&le; ₹3,00,000 / annum</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3.5">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">
-                          Top Recommended Match (92%)
-                        </span>
-                        <h4 className="font-bold text-slate-900 text-sm mt-0.5">
-                          NBCFDC Micro Finance Scheme
-                        </h4>
-                      </div>
-                      <Badge variant="emerald" size="sm">Eligible</Badge>
-                    </div>
-
-                    <div className="mt-3 space-y-1.5 text-[11px] text-slate-700">
-                      <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                        <span>Project cost within ₹1.40 Lakh ceiling</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                        <span>Concessional rate at 6.5% with 3-month moratorium</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                        <span>Disbursed via authorized State Channelising Agency (SCA)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <Link href="/recommend" className="w-full block">
-                      <Button variant="secondary" size="md" className="w-full justify-between">
-                        <span>Test Your Own Eligibility</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-3">
+              <DataFreshnessIndicator status="VERIFIED" compact />
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Core Problem Narrative Section */}
-      <section className="py-16 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-royal-600">
-              The SIH 2026 Challenge
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-800">
-              From Fragmentation &amp; Confusion &rarr; To Actionable Confidence
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600">
-              Beneficiaries often fail to benefit from concessional government funds not due to lack of schemes, but due to fragmented access, obscure eligibility rules, and opaque partner routing.
+          {/* Main Editorial Headline & Context */}
+          <div className="pt-10 pb-8 max-w-4xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-navy-900 tracking-tight leading-[1.12]">
+              Find the financial support that fits your situation.
+            </h1>
+            <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
+              CredNexus connects marginalized entrepreneurs, artisans, students, and small business owners directly to verified government concessional loan schemes, reducing-balance moratorium terms, and accredited channel partners.
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
-                1
+          {/* Integrated Product Journey: "Find My Scheme" Direct Entry */}
+          <div className="mt-4 bg-slate-50 border border-slate-200/90 rounded-2xl p-6 sm:p-8">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+              <div>
+                <span className="text-[11px] font-bold tracking-wider uppercase text-royal-700">
+                  Step 1 &bull; Direct Scheme Query
+                </span>
+                <h2 className="text-base sm:text-lg font-bold text-navy-900 mt-0.5">
+                  What kind of financing are you looking for?
+                </h2>
               </div>
-              <h3 className="font-display font-bold text-base text-navy-800">
-                Scheme Mismatch
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Beneficiaries confuse micro-credit (&le; ₹1.4L) with large commercial term loans (&le; ₹50L), resulting in rejected applications or unviable interest burdens.
+              <span className="text-xs text-slate-500 hidden md:block">
+                No login required &bull; Deterministic matching
+              </span>
+            </div>
+
+            {/* Purpose Selector Chips */}
+            <div className="mt-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                {purposeOptions.map((opt) => {
+                  const isSelected = selectedPurpose === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setSelectedPurpose(opt.id)}
+                      className={`text-left p-3 rounded-xl border transition-all ${
+                        isSelected
+                          ? 'bg-navy-900 text-white border-navy-900 shadow-sm'
+                          : 'bg-white text-slate-800 border-slate-200 hover:border-slate-300 hover:bg-slate-100/70'
+                      }`}
+                    >
+                      <div className="text-xs font-bold leading-snug">{opt.label}</div>
+                      <div className={`text-[10px] mt-1 line-clamp-1 ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
+                        {opt.sub}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Amount Selector & Primary Action */}
+            <div className="mt-6 pt-5 border-t border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-700">
+                    Estimated Capital Requirement:
+                  </span>
+                  <span className="text-sm font-bold font-tabular text-navy-900">
+                    {customAmountText ? customAmountText : formatINR(selectedAmount)}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {capitalPresets.map((preset) => (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAmount(preset.value);
+                        setCustomAmountText('');
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                        selectedAmount === preset.value && !customAmountText
+                          ? 'bg-royal-600 text-white border-royal-600'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                  <div className="relative inline-flex items-center">
+                    <span className="absolute left-2.5 text-xs text-slate-400 font-bold">₹</span>
+                    <input
+                      type="text"
+                      placeholder="Other Amount"
+                      value={customAmountText}
+                      onChange={(e) => setCustomAmountText(e.target.value)}
+                      className="pl-6 pr-3 py-1 text-xs border border-slate-200 rounded-lg bg-white w-28 focus:outline-none focus:border-royal-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 lg:pt-0">
+                <button
+                  type="button"
+                  onClick={handleLaunchRecommender}
+                  className="px-6 py-3 rounded-xl bg-royal-600 hover:bg-royal-700 text-white text-sm font-bold shadow-sm transition-all inline-flex items-center justify-center gap-2"
+                >
+                  <span>Find Matching Schemes</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <Link
+                  href="/schemes"
+                  className="px-4 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold text-center transition-colors"
+                >
+                  Browse Scheme Registry
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          2. HORIZONTAL DATA & TRUST STRIP (NO GENERIC MARKETING CARDS)
+          ========================================================================= */}
+      <section className="bg-slate-900 text-white border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-800 py-6 sm:py-8">
+            <div className="py-4 md:py-0 md:px-6 first:pl-0">
+              <div className="text-2xl sm:text-3xl font-display font-extrabold text-white font-tabular">
+                100%
+              </div>
+              <div className="text-xs font-bold uppercase tracking-wider text-saffron-400 mt-1">
+                Verified Statutory Schemes
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Published by NBCFDC, NSKFDC, PMMY, and Stand-Up India.
               </p>
             </div>
 
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-saffron-100 text-saffron-700 flex items-center justify-center font-bold">
-                2
+            <div className="py-4 md:py-0 md:px-6">
+              <div className="text-2xl sm:text-3xl font-display font-extrabold text-emerald-400 font-tabular">
+                12 Languages
               </div>
-              <h3 className="font-display font-bold text-base text-navy-800">
-                Hidden Moratorium Terms
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Borrowers do not understand how grace periods (3-12 months) and simple vs. capitalized interest impact their monthly repayment installments.
+              <div className="text-xs font-bold uppercase tracking-wider text-emerald-300 mt-1">
+                Digital Multilingual Access
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Native Indic scripts with bidirectional Urdu RTL rendering.
               </p>
             </div>
 
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-royal-100 text-royal-700 flex items-center justify-center font-bold">
-                3
+            <div className="py-4 md:py-0 md:px-6">
+              <div className="text-2xl sm:text-3xl font-display font-extrabold text-white font-tabular">
+                ₹10K – ₹50L+
               </div>
-              <h3 className="font-display font-bold text-base text-navy-800">
-                Unclear Channel Partner Routing
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Not all bank branches or agencies can process specific apex schemes. Borrowers walk into unaccredited branches without finding the right desk.
+              <div className="text-xs font-bold uppercase tracking-wider text-royal-400 mt-1">
+                Concessional Loan Limits
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Covering microfinance groups to large capital investments.
+              </p>
+            </div>
+
+            <div className="py-4 md:py-0 md:px-6 last:pr-0">
+              <div className="text-2xl sm:text-3xl font-display font-extrabold text-saffron-400 font-tabular">
+                3 – 12 Months
+              </div>
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-300 mt-1">
+                Statutory Moratorium
+              </div>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Standard grace terms with reducing-balance protection.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4 Core Pillars of CredNexus */}
+      {/* =========================================================================
+          3. WHAT CAN CREDNEXUS HELP YOU DO? — STRUCTURED EDITORIAL WORKFLOW
+          ========================================================================= */}
+      <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <span className="text-xs font-bold uppercase tracking-wider text-royal-600">
+              The Decision Architecture
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-900 mt-1.5">
+              Everything needed to make an informed borrowing decision.
+            </h2>
+            <p className="text-sm text-slate-600 mt-2">
+              CredNexus resolves the four systematic points of failure where marginalized borrowers typically encounter application rejections or predatory debt.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Step 1 */}
+            <div className="space-y-3 pt-4 border-t-2 border-royal-600">
+              <span className="text-xs font-bold text-royal-600">01 / DISCOVERY</span>
+              <h3 className="text-base font-bold text-navy-900">
+                Identify Eligible Schemes
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Instantly filter across sovereign schemes based on your project cost, social category, and household income ceiling.
+              </p>
+              <Link href="/recommend" className="inline-flex items-center gap-1 text-xs font-bold text-royal-600 hover:text-royal-700">
+                Start Matcher <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Step 2 */}
+            <div className="space-y-3 pt-4 border-t-2 border-emerald-600">
+              <span className="text-xs font-bold text-emerald-700">02 / ELIGIBILITY</span>
+              <h3 className="text-base font-bold text-navy-900">
+                Understand Detailed Rules
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Review plain-language checklists of age limits, target demographics, and required documentation without legal jargon.
+              </p>
+              <Link href="/eligibility" className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800">
+                Check Criteria <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Step 3 */}
+            <div className="space-y-3 pt-4 border-t-2 border-navy-800">
+              <span className="text-xs font-bold text-navy-800">03 / MATHEMATICS</span>
+              <h3 className="text-base font-bold text-navy-900">
+                Calculate Exact Repayments
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Simulate month-by-month installments with reducing balance calculations, moratorium holidays, and subsidized rate comparisons.
+              </p>
+              <Link href="/calculator" className="inline-flex items-center gap-1 text-xs font-bold text-navy-800 hover:text-navy-900">
+                Compute EMI <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Step 4 */}
+            <div className="space-y-3 pt-4 border-t-2 border-saffron-500">
+              <span className="text-xs font-bold text-saffron-700">04 / APPLICATION</span>
+              <h3 className="text-base font-bold text-navy-900">
+                Locate Authorized Partners
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Pinpoint accredited State Channelising Agencies (SCAs), Public Sector Banks, and Regional Rural Banks with active fund limits.
+              </p>
+              <Link href="/partners" className="inline-flex items-center gap-1 text-xs font-bold text-saffron-700 hover:text-saffron-800">
+                Find Partner Desks <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          4. STATUTORY SCHEME REGISTRY OVERVIEW — EDITORIAL DATA ROWS
+          ========================================================================= */}
       <section className="py-16 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-2 mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-royal-600">
-              Platform Capabilities
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-800">
-              Built on 4 Non-Negotiable Pillars
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Pillar 1 */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-elevated transition-all space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-royal-50 text-royal-600 flex items-center justify-center mb-4">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-base text-navy-800 mb-1">
-                  Smart Scheme Recommender
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Progressive disclosure wizard evaluating project needs, income limits, community criteria, and loan sizes with transparent match scores.
-                </p>
-              </div>
-              <Link href="/recommend" className="pt-3 text-xs font-semibold text-royal-600 hover:text-royal-700 inline-flex items-center gap-1">
-                Launch Wizard <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            {/* Pillar 2 */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-elevated transition-all space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
-                  <Calculator className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-base text-navy-800 mb-1">
-                  EMI &amp; Moratorium Math
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Mathematically verified reducing balance calculations with principal grace periods and full month-by-month repayment schedules.
-                </p>
-              </div>
-              <Link href="/calculator" className="pt-3 text-xs font-semibold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1">
-                Compute Repayment <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            {/* Pillar 3 */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-elevated transition-all space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-navy-50 text-navy-800 flex items-center justify-center mb-4">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-base text-navy-800 mb-1">
-                  Partner Locator &amp; Router
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Geo-spatial locator mapping SCAs, PSBs, RRBs, and MFIs with real accreditation matching, distance calculation, and status flags.
-                </p>
-              </div>
-              <Link href="/partners" className="pt-3 text-xs font-semibold text-navy-800 hover:text-navy-900 inline-flex items-center gap-1">
-                Explore Partners <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            {/* Pillar 4 */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-elevated transition-all space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-saffron-50 text-saffron-700 flex items-center justify-center mb-4">
-                  <Globe2 className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-base text-navy-800 mb-1">
-                  12-Language Accessibility
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Full localization across 12 Indian languages with native scripts and true bidirectional RTL layout for Urdu users.
-                </p>
-              </div>
-              <span className="pt-3 text-xs font-semibold text-saffron-800 inline-flex items-center gap-1">
-                Instant Toggle in Header <ChevronRight className="w-3.5 h-3.5" />
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Verified Schemes Section */}
-      <section className="py-16 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-royal-600">
-                Official Portfolio
+                Statutory Scheme Registry
               </span>
-              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-800 mt-1">
-                Featured Verified Concessional Schemes
+              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-900 mt-1">
+                Verified Central Corporation Portfolios
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                Every detail is anchored in official apex guidelines with transparent source attribution.
+                Every scheme is verified against official Ministry of Social Justice and Empowerment guidelines.
               </p>
             </div>
-            <Link href="/schemes">
-              <Button variant="outline" size="sm" icon={<ArrowRight className="w-3.5 h-3.5" />}>
-                View All {SEEDED_SCHEMES.length} Schemes
-              </Button>
+            <Link href="/schemes" className="inline-flex items-center gap-1 text-xs font-bold text-royal-600 hover:text-royal-700">
+              View All {SEEDED_SCHEMES.length} Verified Schemes <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SEEDED_SCHEMES.slice(0, 3).map((scheme) => (
+          {/* Scheme Data Rows (Editorial Grid) */}
+          <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-200 overflow-hidden shadow-xs">
+            {SEEDED_SCHEMES.map((scheme) => (
               <div
                 key={scheme.id}
-                className="bg-white rounded-2xl border border-slate-200 p-6 shadow-card hover:shadow-elevated transition-all flex flex-col justify-between"
+                className="p-5 sm:p-6 hover:bg-slate-50/70 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <Badge variant={scheme.category === 'microfinance' ? 'royal' : scheme.category === 'education' ? 'emerald' : 'navy'} size="sm">
+                <div className="lg:w-2/5 space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        scheme.category === 'microfinance'
+                          ? 'royal'
+                          : scheme.category === 'education'
+                          ? 'emerald'
+                          : 'navy'
+                      }
+                      size="sm"
+                    >
                       {scheme.category.replace('_', ' ').toUpperCase()}
                     </Badge>
-                    <DataFreshnessIndicator status={scheme.verificationStatus} compact />
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {scheme.code}
+                    </span>
                   </div>
-
-                  <h3 className="font-display font-bold text-base text-navy-800">
+                  <h3 className="text-base font-bold text-navy-900">
                     {scheme.name}
                   </h3>
-
-                  <p className="text-xs text-slate-600 line-clamp-2">
+                  <p className="text-xs text-slate-600 line-clamp-1">
                     {scheme.tagline}
                   </p>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 text-xs">
-                    <div className="bg-slate-50 p-2.5 rounded-xl">
-                      <span className="text-[10px] text-slate-500 uppercase font-semibold block">Max Loan Limit</span>
-                      <span className="font-bold text-navy-800 font-tabular">{formatINR(scheme.maxLoanAmount)}</span>
-                    </div>
-                    <div className="bg-slate-50 p-2.5 rounded-xl">
-                      <span className="text-[10px] text-slate-500 uppercase font-semibold block">Interest Rate</span>
-                      <span className="font-bold text-royal-600 font-tabular">{scheme.interestRateMin}% - {scheme.interestRateMax}%</span>
-                    </div>
+                <div className="grid grid-cols-3 gap-4 text-xs lg:w-2/5">
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block">
+                      Max Loan Limit
+                    </span>
+                    <span className="text-sm font-extrabold text-navy-900 font-tabular">
+                      {formatINR(scheme.maxLoanAmount)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block">
+                      Interest Rate
+                    </span>
+                    <span className="text-sm font-extrabold text-royal-600 font-tabular">
+                      {scheme.interestRateMin}% – {scheme.interestRateMax}%
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block">
+                      Moratorium
+                    </span>
+                    <span className="text-sm font-semibold text-slate-700">
+                      {scheme.moratoriumMaxMonths > 0 ? `${scheme.moratoriumMaxMonths} Months` : 'Nil'}
+                    </span>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <Link href={`/schemes/${scheme.id}`} className="text-xs font-bold text-royal-600 hover:text-royal-700 inline-flex items-center gap-1">
-                    Details &bull; Eligibility <ArrowRight className="w-3 h-3" />
+                <div className="flex items-center gap-2 lg:w-1/5 lg:justify-end">
+                  <Link href={`/schemes/${scheme.id}`}>
+                    <Button variant="outline" size="sm">
+                      Details
+                    </Button>
                   </Link>
-                  <Link href={`/calculator?amount=${scheme.maxLoanAmount}&rate=${scheme.interestRateMin}&tenure=${scheme.tenureMaxMonths}&moratorium=${scheme.moratoriumMaxMonths}`}>
-                    <Button variant="ghost" size="sm" icon={<Calculator className="w-3 h-3 text-royal-600" />}>
+                  <Link href={`/calculator?scheme=${scheme.id}`}>
+                    <Button variant="primary" size="sm">
                       Calc EMI
                     </Button>
                   </Link>
@@ -396,83 +447,118 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Interactive Quick Calculator Demo Bar */}
-      <section className="py-16 bg-navy-900 text-white">
+      {/* =========================================================================
+          5. FINANCIAL CALCULATOR SECTION — CONCESSIONAL REPAYMENT CLARITY
+          ========================================================================= */}
+      <section className="py-16 sm:py-20 bg-navy-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-5 space-y-4">
-              <Badge variant="emerald" size="sm">Financial Transparency</Badge>
-              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white leading-tight">
-                Instant Concessional Loan Calculator
+              <span className="text-xs font-bold uppercase tracking-wider text-saffron-400">
+                Financial Transparency
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
+                Understand your actual monthly installment before applying.
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Test reducing balance payments with 3-month grace moratorium for NBCFDC Microfinance (&le; ₹1,40,000 at 6.5% interest).
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Statutory schemes offer repayment holidays (moratorium) where beneficiaries are not required to repay principal during initial enterprise setup.
               </p>
               <div className="pt-2">
                 <Link href="/calculator">
-                  <Button variant="primary" size="md" icon={<Calculator className="w-4 h-4" />}>
-                    Open Comprehensive Calculator
+                  <Button variant="primary" size="md" className="gap-2">
+                    <Calculator className="w-4 h-4" /> Open Full Calculator &amp; Amortization Schedule
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <div className="lg:col-span-7 bg-navy-800/90 rounded-2xl p-6 border border-navy-700 shadow-2xl">
+            <div className="lg:col-span-7 bg-navy-800 border border-navy-700 rounded-2xl p-6 sm:p-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <label className="text-xs font-semibold text-slate-300 flex justify-between">
-                      <span>Loan Amount:</span>
-                      <span className="text-white font-bold">{formatINR(quickAmount)}</span>
-                    </label>
+                    <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                      <span>Loan Amount</span>
+                      <span className="text-white font-bold font-tabular">{formatINR(calcAmount)}</span>
+                    </div>
                     <input
                       type="range"
                       min={10000}
                       max={140000}
                       step={5000}
-                      value={quickAmount}
-                      onChange={(e) => setQuickAmount(Number(e.target.value))}
-                      className="w-full mt-2 accent-royal-500 cursor-pointer"
+                      value={calcAmount}
+                      onChange={(e) => setCalcAmount(Number(e.target.value))}
+                      className="w-full accent-royal-400 cursor-pointer"
                     />
+                    <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+                      <span>₹10,000</span>
+                      <span>₹1,40,000 (Micro Ceiling)</span>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-slate-300 flex justify-between">
-                      <span>Tenure:</span>
-                      <span className="text-white font-bold">{quickTenure} Months (3 Yrs)</span>
-                    </label>
+                    <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                      <span>Repayment Tenure</span>
+                      <span className="text-white font-bold">{calcTenure} Months ({calcTenure / 12} Yrs)</span>
+                    </div>
                     <input
                       type="range"
                       min={12}
                       max={36}
                       step={6}
-                      value={quickTenure}
-                      onChange={(e) => setQuickTenure(Number(e.target.value))}
-                      className="w-full mt-2 accent-royal-500 cursor-pointer"
+                      value={calcTenure}
+                      onChange={(e) => setCalcTenure(Number(e.target.value))}
+                      className="w-full accent-royal-400 cursor-pointer"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                      <span>Moratorium Grace Period</span>
+                      <span className="text-emerald-400 font-bold">{calcMoratorium} Months</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={6}
+                      step={1}
+                      value={calcMoratorium}
+                      onChange={(e) => setCalcMoratorium(Number(e.target.value))}
+                      className="w-full accent-emerald-400 cursor-pointer"
                     />
                   </div>
                 </div>
 
-                <div className="bg-navy-950/60 rounded-xl p-4 border border-navy-700 flex flex-col justify-between space-y-3">
+                <div className="bg-navy-950/80 rounded-xl p-5 border border-navy-700 flex flex-col justify-between space-y-4">
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                       Estimated Monthly EMI
                     </span>
-                    <div className="text-2xl font-extrabold text-emerald-400 font-tabular mt-1">
-                      {formatINR(quickCalc.regularMonthlyEMI)} / mo
+                    <div className="text-3xl font-extrabold text-emerald-400 font-tabular mt-1">
+                      {formatINR(quickCalc.regularMonthlyEMI)}
+                      <span className="text-xs text-slate-400 font-normal"> / mo</span>
                     </div>
                   </div>
 
-                  <div className="space-y-1 text-xs text-slate-300 pt-2 border-t border-navy-800">
+                  <div className="space-y-2 text-xs text-slate-300 pt-3 border-t border-navy-800">
                     <div className="flex justify-between">
-                      <span>Grace Moratorium:</span>
-                      <span className="text-white font-semibold">3 Months</span>
+                      <span>Interest Rate:</span>
+                      <span className="font-bold text-white">6.5% Concessional</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Moratorium Interest:</span>
+                      <span className="font-bold text-slate-200">Simple Interest</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Total Repayment:</span>
-                      <span className="text-white font-bold font-tabular">{formatINR(quickCalc.totalRepayment)}</span>
+                      <span className="font-bold text-white font-tabular">{formatINR(quickCalc.totalRepayment)}</span>
                     </div>
                   </div>
+
+                  <Link href={`/calculator?amount=${calcAmount}&tenure=${calcTenure}&moratorium=${calcMoratorium}`} className="block">
+                    <Button variant="secondary" size="sm" className="w-full text-xs">
+                      View Full Schedule
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -480,28 +566,86 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final Call to Action */}
-      <section className="py-20 bg-gradient-to-b from-slate-50 to-blue-50/50 text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            Empowering Grassroots Livelihoods
+      {/* =========================================================================
+          6. CHANNEL PARTNER NETWORKS & GEO-SPATIAL MAP TEASER
+          ========================================================================= */}
+      <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-200">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-royal-600">
+                Institutional Delivery Layer
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-900 mt-1">
+                Authorized Channel Partner Network
+              </h2>
+              <p className="text-sm text-slate-600 mt-1.5 max-w-2xl">
+                Schemes are not disbursed directly by the central government. Borrowers must submit their dossiers to accredited regional channel partners.
+              </p>
+            </div>
+            <Link href="/partners">
+              <Button variant="outline" className="gap-2">
+                <MapPin className="w-4 h-4 text-royal-600" /> Open Interactive Partner Map
+              </Button>
+            </Link>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-navy-800">
-            Ready to find your eligible government scheme?
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+            <div className="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div className="text-xs font-bold text-royal-700 uppercase">State Channelising Agencies</div>
+              <div className="text-sm font-extrabold text-navy-900">SCAs</div>
+              <p className="text-xs text-slate-600">
+                Designated state corporations (e.g. DSFDC, GBCDC, MPBCDC) implementing backward class programs.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div className="text-xs font-bold text-emerald-700 uppercase">Public Sector Banks</div>
+              <div className="text-sm font-extrabold text-navy-900">PSBs</div>
+              <p className="text-xs text-slate-600">
+                Nationalized banks (PNB, SBI, Bank of Baroda) managing Mudra, Stand-Up India, and refinance windows.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div className="text-xs font-bold text-navy-800 uppercase">Regional Rural Banks</div>
+              <div className="text-sm font-extrabold text-navy-900">RRBs</div>
+              <p className="text-xs text-slate-600">
+                Grassroots rural banks (Baroda Gujarat Gramin Bank, Aryavart Bank) with deep agrarian reach.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div className="text-xs font-bold text-saffron-700 uppercase">Microfinance Networks</div>
+              <div className="text-sm font-extrabold text-navy-900">NBFC-MFIs</div>
+              <p className="text-xs text-slate-600">
+                Accredited microfinance institutions delivering community micro-credit to women SHGs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          7. EDITORIAL FOOTER CALLOUT
+          ========================================================================= */}
+      <section className="py-16 bg-slate-100 text-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+          <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-navy-900">
+            Make your financial decision with total clarity.
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
-            Take 2 minutes to describe your project or educational goals. CredNexus will match you to the right scheme and authorized partner with complete mathematical clarity.
+          <p className="text-sm text-slate-600 leading-relaxed">
+            Begin with your project capital requirement or explore the full statutory scheme registry. No ads, no commercial lead generation, and no fees.
           </p>
-          <div className="flex justify-center items-center gap-3 pt-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link href="/recommend">
-              <Button size="lg" variant="primary" icon={<Sparkles className="w-4 h-4" />}>
-                Start Scheme Matcher
+              <Button size="lg" variant="primary" className="gap-2">
+                Launch Scheme Matcher <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/partners">
-              <Button size="lg" variant="outline" icon={<MapPin className="w-4 h-4 text-navy-800" />}>
-                Locate Channel Partners
+              <Button size="lg" variant="outline">
+                Locate Nearby Partner Desks
               </Button>
             </Link>
           </div>
