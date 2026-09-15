@@ -9,6 +9,15 @@ export class PartnerService {
     return this.partners;
   }
 
+  public static getGeocodedPartners(): ChannelPartner[] {
+    return this.partners.filter(
+      (p) =>
+        (p.coordinatePrecision === 'ADDRESS_GEOCODED' || p.coordinatePrecision === 'EXACT') &&
+        p.lat !== null &&
+        p.lng !== null
+    );
+  }
+
   public static getPartnerById(id: string): ChannelPartner | undefined {
     return this.partners.find((p) => p.id === id || p.code === id);
   }

@@ -66,31 +66,21 @@ export function evaluateSchemeMatch(scheme: Scheme, input: RecommenderInput): Sc
     );
   }
 
-  // 4. Beneficiary Category / Profile Fit (Max 15 pts)
-  const isBackwardClass = ['OBC', 'EBC', 'Backward Classes'].includes(input.applicantCategory);
-  const isSCST = ['SC', 'ST', 'SC/ST'].includes(input.applicantCategory);
+  // 4. Beneficiary Category / Profile Fit (Mandatory Hard Constraint for NSFDC)
+  const isSC = input.applicantCategory === 'SC' || input.applicantCategory === 'Scheduled Caste';
 
-  if (scheme.code.startsWith('NBCFDC')) {
-    if (isBackwardClass) {
+  if (scheme.code.startsWith('NSFDC')) {
+    if (isSC) {
       score += 15;
-      matchedReasons.push('Applicant belongs to the verified target community (OBC/EBC)');
+      matchedReasons.push('Applicant satisfies mandatory Scheduled Caste (SC) statutory beneficiary requirement');
     } else {
-      score += 5;
-      caveats.push('Requires verified State/Central OBC or Backward Classes certificate');
+      isEligible = false;
+      unmetCriteria.push(
+        `NSFDC concessional lending schemes are statutorily reserved for Scheduled Caste (SC) beneficiaries under Ministry of Social Justice & Empowerment guidelines. Applicant category '${input.applicantCategory}' does not qualify for NSFDC credit assistance.`
+      );
     }
-  } else if (scheme.code.startsWith('SUI')) {
-    // Stand-Up India: SC/ST or Women
-    if (isSCST || input.isFemale) {
-      score += 15;
-      matchedReasons.push('Directly qualifies under Stand-Up India quota (Woman/SC/ST promoter)');
-    } else {
-      score += 5;
-      caveats.push('Stand-Up India mandates woman or SC/ST promoter ownership >= 51%');
-    }
-  } else if (scheme.code.startsWith('NSKFDC')) {
-    score += 10;
-    caveats.push('Requires verification of family engagement in sanitation/cleaning occupations');
   } else {
+    // Other sovereign schemes
     score += 15;
     matchedReasons.push('Open to all qualified commercial/entrepreneurial categories');
   }
@@ -118,9 +108,8 @@ export function evaluateSchemeMatch(scheme: Scheme, input: RecommenderInput): Sc
     ? Math.max(1, scheme.interestRateMin - scheme.femaleInterestConcession)
     : scheme.interestRateMin;
 
-  const sampleLoan = Math.min(input.projectCost, scheme.maxLoanAmount);
-  const calResult = calculateLoanRepayment({
-    principal: sampleLoan,
+  const repaymentCalc = calculateLoanRepayment({
+    principal: Math.min(Math.max(input.projectCost, scheme.minLoanAmount), scheme.maxLoanAmount),
     interestRatePercent: effectiveRate,
     tenureMonths: scheme.tenureMaxMonths,
     moratoriumMonths: scheme.moratoriumMaxMonths,
@@ -128,27 +117,33 @@ export function evaluateSchemeMatch(scheme: Scheme, input: RecommenderInput): Sc
 
   return {
     scheme,
-    matchScore: Math.min(100, Math.max(0, score)),
+    matchScore: isEligible ? Math.min(100, Math.max(0, score)) : 0,
     isEligible,
     suitability,
     matchedReasons,
     unmetCriteria,
     caveats,
-    calculatedIndicativeEMI: calResult.regularMonthlyEMI,
+    calculatedIndicativeEMI: repaymentCalc.regularMonthlyEMI,
   };
 }
 
 /**
- * Rank all available schemes according to user requirements
+ * Filter, Evaluate, and Rank Schemes based on applicant input
+ * Operates strictly on ACTIVE operational schemes.
  */
 export function rankSchemes(schemes: Scheme[], input: RecommenderInput): SchemeMatchResult[] {
-  return schemes
+  // Only evaluate ACTIVE operational schemes
+  const operationalSchemes = schemes.filter(
+    (s) => s.operationalStatus === 'ACTIVE' || !s.operationalStatus
+  );
+
+  return operationalSchemes
     .map((scheme) => evaluateSchemeMatch(scheme, input))
     .sort((a, b) => {
-      // Prioritize eligible over ineligible
+      // Eligible first
       if (a.isEligible && !b.isEligible) return -1;
       if (!a.isEligible && b.isEligible) return 1;
-      // Then by match score descending
+      // Highest score first
       return b.matchScore - a.matchScore;
     });
 }

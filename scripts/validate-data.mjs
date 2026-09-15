@@ -30,8 +30,17 @@ schemes.forEach(s => {
 
 console.log('Validating channel partners...');
 partners.forEach(p => {
-  if (!p.id || !p.code || !p.name || !p.type || typeof p.lat !== 'number' || typeof p.lng !== 'number') {
+  const hasValidCoords = (typeof p.lat === 'number' && typeof p.lng === 'number') || (p.lat === null && p.lng === null);
+  if (!p.id || !p.code || !p.name || !p.type || !hasValidCoords) {
     console.error(`Invalid partner schema: ${p.id || 'unknown'}`);
+    errors++;
+  }
+  if (p.coordinatePrecision === 'UNAVAILABLE' && (p.lat !== null || p.lng !== null)) {
+    console.error(`Partner ${p.id} has UNAVAILABLE precision but non-null coordinates`);
+    errors++;
+  }
+  if ((p.coordinatePrecision === 'EXACT' || p.coordinatePrecision === 'ADDRESS_GEOCODED') && (typeof p.lat !== 'number' || typeof p.lng !== 'number')) {
+    console.error(`Partner ${p.id} has ${p.coordinatePrecision} precision but missing numeric coordinates`);
     errors++;
   }
   if (Array.isArray(p.supportedSchemeCodes)) {

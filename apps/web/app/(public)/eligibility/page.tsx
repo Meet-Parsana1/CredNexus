@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   ShieldCheck, 
   CheckCircle2, 
@@ -19,13 +20,19 @@ import { formatINR } from '../../../lib/engines/calculator';
 import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
 
-export default function EligibilityPage() {
+function EligibilityContent() {
+  const searchParams = useSearchParams();
   const { t } = useLanguage();
 
-  const [selectedSchemeId, setSelectedSchemeId] = useState<string>(SEEDED_SCHEMES[0].id);
-  const [projectCost, setProjectCost] = useState<number>(120000);
-  const [annualIncome, setAnnualIncome] = useState<number>(280000);
-  const [category, setCategory] = useState<string>('OBC');
+  const paramScheme = searchParams?.get('scheme') || SEEDED_SCHEMES[0]?.id || '';
+  const paramAmount = Number(searchParams?.get('amount')) || 120000;
+  const paramIncome = Number(searchParams?.get('income')) || 280000;
+  const paramCategory = searchParams?.get('category') || 'SC';
+
+  const [selectedSchemeId, setSelectedSchemeId] = useState<string>(paramScheme);
+  const [projectCost, setProjectCost] = useState<number>(paramAmount);
+  const [annualIncome, setAnnualIncome] = useState<number>(paramIncome);
+  const [category, setCategory] = useState<string>(paramCategory);
   const [isFemale, setIsFemale] = useState<boolean>(false);
 
   const selectedScheme = SEEDED_SCHEMES.find((s) => s.id === selectedSchemeId) || SEEDED_SCHEMES[0];
@@ -68,7 +75,7 @@ export default function EligibilityPage() {
             >
               {SEEDED_SCHEMES.map((sch) => (
                 <option key={sch.id} value={sch.id}>
-                  {sch.name} (Max: {formatINR(sch.maxLoanAmount)} &bull; Income Cap: {sch.maxAnnualIncome > 0 ? formatINR(sch.maxAnnualIncome) : 'None'})
+                  {sch.name} (Max: {formatINR(sch.maxLoanAmount)} • Income Cap: {sch.maxAnnualIncome > 0 ? formatINR(sch.maxAnnualIncome) : 'None'})
                 </option>
               ))}
             </select>
@@ -114,8 +121,8 @@ export default function EligibilityPage() {
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full text-xs p-2.5 rounded-xl border border-slate-200 font-medium"
               >
-                <option value="OBC">Other Backward Class (OBC)</option>
-                <option value="SC/ST">Scheduled Caste / Tribe (SC/ST)</option>
+                <option value="SC">Scheduled Caste (SC) — NSFDC Target Beneficiary</option>
+                <option value="OBC">Other Backward Class (OBC / EBC)</option>
                 <option value="General">General Category</option>
                 <option value="Minority">Minority Community</option>
               </select>
@@ -137,56 +144,47 @@ export default function EligibilityPage() {
           </div>
         </div>
 
-        {/* Evaluation Output Card */}
-        <div className={`rounded-2xl border-2 p-6 sm:p-8 shadow-elevated transition-all ${
-          evaluation.isEligible
-            ? 'bg-emerald-50/50 border-emerald-500'
-            : 'bg-red-50/40 border-red-400'
-        }`}>
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
-            <div className="flex items-center gap-3">
-              {evaluation.isEligible ? (
-                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-              ) : (
-                <div className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center">
-                  <XCircle className="w-6 h-6" />
-                </div>
-              )}
-              <div>
-                <h3 className="text-lg font-bold text-navy-800">
-                  {evaluation.isEligible ? 'Meets Eligibility Requirements' : 'Does Not Currently Meet Criteria'}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Evaluation against {selectedScheme.code} statutory guidelines
-                </p>
-              </div>
+        {/* Results Card */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div className="space-y-1">
+              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                Deterministic Rule Outcome
+              </span>
+              <h3 className="text-lg font-bold text-navy-800">
+                {selectedScheme.name}
+              </h3>
             </div>
-
-            <Badge variant={evaluation.isEligible ? 'emerald' : 'red'} size="md">
-              Score: {evaluation.matchScore} / 100
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant={evaluation.isEligible ? 'emerald' : 'red'} size="md">
+                {evaluation.isEligible ? 'Statutorily Eligible' : 'Ineligible based on Criteria'}
+              </Badge>
+              <Badge variant="neutral" size="md">
+                Suitability: {evaluation.suitability}
+              </Badge>
+            </div>
           </div>
 
-          <div className="mt-5 space-y-4 text-xs">
-            {/* Matched Rules */}
-            <div className="space-y-2">
-              <span className="font-bold text-emerald-800 flex items-center gap-1.5 uppercase tracking-wide text-[11px]">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                Satisfied Conditions:
-              </span>
-              <ul className="space-y-1.5 pl-5 list-disc text-slate-700">
-                {evaluation.matchedReasons.map((r, i) => (
-                  <li key={i}>{r}</li>
-                ))}
-              </ul>
-            </div>
+          <div className="space-y-4 text-xs">
+            {/* Matched Criteria */}
+            {evaluation.matchedReasons.length > 0 && (
+              <div className="space-y-2">
+                <span className="font-bold text-emerald-800 flex items-center gap-1.5 uppercase tracking-wide text-[11px]">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  Verified Statutory Conditions Met:
+                </span>
+                <ul className="space-y-1.5 pl-5 list-disc text-slate-700 font-medium">
+                  {evaluation.matchedReasons.map((m, i) => (
+                    <li key={i}>{m}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-            {/* Unmet Rules */}
+            {/* Unmet Criteria */}
             {evaluation.unmetCriteria.length > 0 && (
               <div className="space-y-2 pt-3 border-t border-slate-200">
-                <span className="font-bold text-red-700 flex items-center gap-1.5 uppercase tracking-wide text-[11px]">
+                <span className="font-bold text-red-800 flex items-center gap-1.5 uppercase tracking-wide text-[11px]">
                   <XCircle className="w-4 h-4 text-red-600" />
                   Unmet Conditions (Reason for Ineligibility):
                 </span>
@@ -220,6 +218,11 @@ export default function EligibilityPage() {
                 View Official Scheme Dossier
               </Button>
             </Link>
+            <Link href={`/calculator?scheme=${selectedScheme.id}&amount=${projectCost}&rate=${selectedScheme.interestRateMin}&tenure=${selectedScheme.tenureMaxMonths}&moratorium=${selectedScheme.moratoriumMaxMonths}`}>
+              <Button variant="outline" size="sm" icon={<Calculator className="w-3.5 h-3.5 text-royal-600" />}>
+                Calculate Loan Installment
+              </Button>
+            </Link>
             <Link href={`/partners?scheme=${selectedScheme.code}`}>
               <Button variant="emerald" size="sm" icon={<MapPin className="w-3.5 h-3.5" />}>
                 Locate Accredited Channel Partner
@@ -229,5 +232,13 @@ export default function EligibilityPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EligibilityPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 py-16 text-center text-xs text-slate-400 font-medium">Loading Eligibility Engine...</div>}>
+      <EligibilityContent />
+    </Suspense>
   );
 }

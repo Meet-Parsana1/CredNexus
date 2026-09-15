@@ -27,7 +27,7 @@ import { useLanguage } from '../../lib/i18n/context';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { DataFreshnessIndicator } from '../../components/ui/DataFreshnessIndicator';
-import { SEEDED_SCHEMES } from '../../lib/data';
+import { SEEDED_SCHEMES, SEEDED_PARTNERS } from '../../lib/data';
 import { calculateLoanRepayment, formatINR } from '../../lib/engines/calculator';
 import { SchemeCategory } from '../../lib/types';
 
@@ -240,31 +240,31 @@ export default function HomePage() {
                               <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-800 py-6 sm:py-8">
                                     <div className="py-4 md:py-0 md:px-6 first:pl-0">
                                           <div className="text-2xl sm:text-3xl font-display font-extrabold text-white font-tabular">
-                                                100%
+                                                {SEEDED_SCHEMES.length} Schemes
                                           </div>
                                           <div className="text-xs font-bold uppercase tracking-wider text-saffron-400 mt-1">
-                                                Verified Statutory Schemes
+                                                Official NSFDC Registry
                                           </div>
                                           <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                                                Published by NBCFDC, NSKFDC, PMMY, and Stand-Up India.
+                                                Statutory concessional lending published by NSFDC / MoSJE.
                                           </p>
                                     </div>
 
                                     <div className="py-4 md:py-0 md:px-6">
                                           <div className="text-2xl sm:text-3xl font-display font-extrabold text-emerald-400 font-tabular">
-                                                12 Languages
+                                                {SEEDED_PARTNERS.length} Partners
                                           </div>
                                           <div className="text-xs font-bold uppercase tracking-wider text-emerald-300 mt-1">
-                                                Digital Multilingual Access
+                                                Accredited SCAs &amp; Banks
                                           </div>
                                           <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                                                Native Indic scripts with bidirectional Urdu RTL rendering.
+                                                State Channelising Agencies, Public Sector Banks, and RRBs.
                                           </p>
                                     </div>
 
                                     <div className="py-4 md:py-0 md:px-6">
                                           <div className="text-2xl sm:text-3xl font-display font-extrabold text-white font-tabular">
-                                                ₹10K – ₹50L+
+                                                ₹10K – ₹45L
                                           </div>
                                           <div className="text-xs font-bold uppercase tracking-wider text-royal-400 mt-1">
                                                 Concessional Loan Limits
@@ -276,7 +276,7 @@ export default function HomePage() {
 
                                     <div className="py-4 md:py-0 md:px-6 last:pr-0">
                                           <div className="text-2xl sm:text-3xl font-display font-extrabold text-saffron-400 font-tabular">
-                                                3 – 12 Months
+                                                1 – 12 Months
                                           </div>
                                           <div className="text-xs font-bold uppercase tracking-wider text-slate-300 mt-1">
                                                 Statutory Moratorium

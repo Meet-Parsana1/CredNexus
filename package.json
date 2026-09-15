@@ -10,7 +10,9 @@
     "dev": "npm --workspace=apps/web run dev",
     "build": "npm --workspace=apps/web run build",
     "start": "npm --workspace=apps/web run start",
-    "test": "node --test tests/unit/*.test.mjs"
+    "test": "node --test tests/unit/*.test.mjs",
+    "ingest:nsfdc": "node scripts/ingest-nsfdc.mjs",
+    "validate:data": "node scripts/validate-data.mjs"
   },
   "keywords": [
     "fintech",

@@ -22,16 +22,19 @@ function CalculatorContent() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 
-  const initialAmount = Number(searchParams?.get('amount')) || 140000;
-  const initialRate = Number(searchParams?.get('rate')) || 6.5;
-  const initialTenure = Number(searchParams?.get('tenure')) || 36;
-  const initialMoratorium = Number(searchParams?.get('moratorium')) || 3;
+  const paramScheme = searchParams?.get('scheme') || 'custom';
+  const matchingScheme = SEEDED_SCHEMES.find((sch) => sch.id === paramScheme);
+
+  const initialAmount = Number(searchParams?.get('amount')) || (matchingScheme ? matchingScheme.maxLoanAmount : 125000);
+  const initialRate = Number(searchParams?.get('rate')) || (matchingScheme ? matchingScheme.interestRateMin : 6.5);
+  const initialTenure = Number(searchParams?.get('tenure')) || (matchingScheme ? matchingScheme.tenureMaxMonths : 36);
+  const initialMoratorium = Number(searchParams?.get('moratorium')) || (matchingScheme ? matchingScheme.moratoriumMaxMonths : 3);
 
   const [principal, setPrincipal] = useState(initialAmount);
   const [interestRate, setInterestRate] = useState(initialRate);
   const [tenureMonths, setTenureMonths] = useState(initialTenure);
   const [moratoriumMonths, setMoratoriumMonths] = useState(initialMoratorium);
-  const [selectedSchemeId, setSelectedSchemeId] = useState<string>('custom');
+  const [selectedSchemeId, setSelectedSchemeId] = useState<string>(matchingScheme ? matchingScheme.id : 'custom');
   const [showAmortization, setShowAmortization] = useState(false);
 
   // Pre-fill from scheme dropdown

@@ -47,7 +47,7 @@ function RecommendWizard() {
             purpose: paramPurpose,
             projectCost: paramAmount > 0 ? paramAmount : 120000,
             annualIncome: 300000,
-            applicantCategory: 'OBC',
+            applicantCategory: 'SC',
             isFemale: false,
             state: 'Delhi',
       });
@@ -307,12 +307,11 @@ function RecommendWizard() {
                                                 <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-200 text-xs text-slate-700">
                                                       <div className="flex items-center gap-1.5 font-bold text-royal-800 mb-1">
                                                             <ShieldCheck className="w-4 h-4 text-royal-600" />
-                                                            Income Guideline Reminder
+                                                            Statutory Beneficiary Guideline
                                                       </div>
                                                       <span>
-                                                            NBCFDC Microfinance limits annual family income to{' '}
-                                                            <strong>₹3,00,000</strong>. General Term Loans and Education
-                                                            Loans allow up to <strong>₹5,00,000</strong>.
+                                                            NSFDC concessional lending schemes are statutorily reserved for{' '}
+                                                            <strong>Scheduled Caste (SC)</strong> beneficiaries under MoSJE guidelines.
                                                       </span>
                                                 </div>
                                           </div>
@@ -326,8 +325,7 @@ function RecommendWizard() {
                                                             Beneficiary Community &amp; Applicant Details
                                                       </h3>
                                                       <p className="text-xs text-slate-500 mt-0.5">
-                                                            Specific apex corporations cater to backward classes, SC/ST,
-                                                            or female entrepreneurs.
+                                                            NSFDC caters to Scheduled Caste (SC) beneficiaries, artisans, students, and enterprises.
                                                       </p>
                                                 </div>
 
@@ -346,11 +344,11 @@ function RecommendWizard() {
                                                                   }
                                                                   className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:ring-1 focus:ring-royal-500 focus:outline-none"
                                                             >
+                                                                  <option value="SC">
+                                                                        Scheduled Caste (SC) — NSFDC Target Beneficiary
+                                                                  </option>
                                                                   <option value="OBC">
                                                                         Other Backward Class (OBC / EBC)
-                                                                  </option>
-                                                                  <option value="SC/ST">
-                                                                        Scheduled Caste / Tribe (SC/ST)
                                                                   </option>
                                                                   <option value="General">
                                                                         General / Other Category

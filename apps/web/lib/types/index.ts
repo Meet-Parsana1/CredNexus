@@ -10,6 +10,17 @@ export type VerificationStatus =
   | 'DEMO_ILLUSTRATIVE' 
   | 'EXTERNAL_SYNC';
 
+export type SchemeOperationalStatus = 
+  | 'ACTIVE' 
+  | 'HISTORICAL' 
+  | 'SUPERSEDED' 
+  | 'UNKNOWN';
+
+export type CoordinatePrecision = 
+  | 'EXACT' 
+  | 'ADDRESS_GEOCODED' 
+  | 'UNAVAILABLE';
+
 export interface Scheme {
   id: string;
   code: string;
@@ -31,18 +42,32 @@ export interface Scheme {
   moratoriumMaxMonths: number;
   coveragePercent: number;
   maxAnnualIncome: number; // 0 if no ceiling
-  targetBeneficiaries: string[]; // e.g. ["Backward Classes", "Women", "Sanitation Workers"]
+  targetBeneficiaries: string[]; // e.g. ["Scheduled Castes", "SC Women", "SC Artisans"]
   eligibleActivities: string[];
   requiredDocuments: string[];
-  eligiblePartnerTypes: ('SCA' | 'PSB' | 'RRB' | 'NBFC_MFI')[];
+  eligiblePartnerTypes: ('SCA' | 'PSB' | 'RRB' | 'NBFC_MFI' | 'COOPERATIVE_BANK' | 'SMALL_FINANCE_BANK' | 'OTHER')[];
   source: string;
   sourceUrl?: string;
+  sourceDocumentUrl?: string;
+  sourceType?: 'official-web' | 'official-pdf';
+  sourceHash?: string;
+  publishedAt?: string;
+  retrievedAt?: string;
   verificationStatus: VerificationStatus;
+  operationalStatus?: SchemeOperationalStatus;
   lastVerified: string;
   features: string[];
+  conflictNote?: string;
 }
 
-export type PartnerType = 'SCA' | 'PSB' | 'RRB' | 'NBFC_MFI';
+export type PartnerType = 
+  | 'SCA' 
+  | 'PSB' 
+  | 'RRB' 
+  | 'NBFC_MFI' 
+  | 'COOPERATIVE_BANK' 
+  | 'SMALL_FINANCE_BANK' 
+  | 'OTHER';
 
 export interface ChannelPartner {
   id: string;
@@ -55,18 +80,24 @@ export interface ChannelPartner {
   district: string;
   state: string;
   pincode: string;
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
+  coordinatePrecision: CoordinatePrecision;
   contactPhone?: string;
   contactEmail?: string;
   website?: string;
   supportedCategories: SchemeCategory[];
   supportedSchemeCodes: string[];
   operationalStatus: 'ACTIVE' | 'LIMITED' | 'INACTIVE';
-  fundUtilizationRatePercent: number;
-  npaRiskStatus: 'LOW' | 'MEDIUM' | 'HIGH';
+  fundUtilizationRatePercent?: number;
+  npaRiskStatus?: 'LOW' | 'MEDIUM' | 'HIGH';
+  availabilityNote?: string;
   verificationStatus: VerificationStatus;
   lastVerified: string;
+  source?: string;
+  sourceUrl?: string;
+  sourceDocumentUrl?: string;
+  retrievedAt?: string;
   notes?: string;
 }
 
@@ -135,7 +166,7 @@ export interface PartnerRoutingCriteria {
 
 export interface PartnerRoutingResult {
   partner: ChannelPartner;
-  distanceKm: number;
+  distanceKm: number | null;
   routingScore: number;
   isCompatible: boolean;
   reasons: string[];

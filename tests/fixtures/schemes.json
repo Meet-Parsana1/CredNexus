@@ -1,16 +1,16 @@
 [
   {
-    "id": "sch_nbcfdc_micro",
-    "code": "NBCFDC-MFS-01",
-    "name": "NBCFDC Micro Finance Scheme",
-    "shortName": "Micro Finance Scheme",
+    "id": "sch_nsfdc_mfs",
+    "code": "NSFDC-MFS-01",
+    "name": "Micro Finance Scheme (MFS)",
+    "shortName": "Micro Finance Scheme (MFS)",
     "category": "microfinance",
-    "tagline": "Rapid, concessional micro-credit for small trades, artisans, and self-help entrepreneurs",
-    "description": "The Micro Finance Scheme is implemented through State Channelising Agencies (SCAs), Regional Rural Banks (RRBs), and accredited NBFC-MFIs to provide quick credit to target group entrepreneurs with minimal documentation and subsidized interest.",
-    "objective": "To finance small/petty business, artisanal activities, and retail trade for marginalized entrepreneurs living at grassroots levels.",
-    "targetGroup": "Backward classes living below poverty line or with annual family income up to ₹3,00,000.",
+    "tagline": "Micro-credit for SC entrepreneurs and artisans through SCAs",
+    "description": "NSFDC provides loans up to 90% of the Project Cost with a maximum amount of up to ₹ 1.25 lakh per unit. NSFDC charges 2.5% from the SCAs/CAs, which in turn shall charge 6.5% from the Beneficiaries.",
+    "objective": "Provision of concessional credit to Scheduled Caste beneficiaries for self-employment and education.",
+    "targetGroup": "Scheduled Caste (SC) beneficiaries as defined under Article 341 of the Constitution of India.",
     "minLoanAmount": 10000,
-    "maxLoanAmount": 140000,
+    "maxLoanAmount": 125000,
     "interestRateMin": 6.0,
     "interestRateMax": 6.5,
     "femaleInterestConcession": 0.5,
@@ -19,40 +19,55 @@
     "moratoriumMinMonths": 1,
     "moratoriumMaxMonths": 3,
     "coveragePercent": 90,
-    "maxAnnualIncome": 300000,
-    "targetBeneficiaries": ["Backward Classes", "Women Entrepreneurs", "Rural Artisans", "Street Vendors"],
-    "eligibleActivities": ["Grocery Stores", "Tailoring & Handloom", "Food Vending", "Small Repair Shops", "Vegetable Trading"],
-    "requiredDocuments": [
-      "Aadhaar Card / Government Photo ID",
-      "Family Income Certificate from Tehsildar/Revenue Authority",
-      "Caste / Community Certificate (OBC/EBC)",
-      "Bank Passbook / Cancelled Cheque",
-      "Passport Size Photographs"
+    "maxAnnualIncome": 0,
+    "targetBeneficiaries": [
+      "Scheduled Castes",
+      "SC Women",
+      "SC Youth",
+      "SC Artisans"
     ],
-    "eligiblePartnerTypes": ["SCA", "RRB", "NBFC_MFI"],
-    "source": "National Backward Classes Finance & Development Corporation (NBCFDC)",
-    "sourceUrl": "https://www.nbcfdc.gov.in",
+    "eligibleActivities": [
+      "As notified by NSFDC — refer official source"
+    ],
+    "requiredDocuments": [
+      "Caste Certificate (SC)",
+      "Aadhaar Card",
+      "Income Certificate",
+      "Bank Account"
+    ],
+    "eligiblePartnerTypes": [
+      "SCA",
+      "RRB"
+    ],
+    "operationalStatus": "ACTIVE",
     "verificationStatus": "VERIFIED",
-    "lastVerified": "2026-03-01",
+    "source": "National Scheduled Castes Finance and Development Corporation (NSFDC)",
+    "sourceUrl": "https://nsfdc.nic.in/scheme",
+    "sourceType": "official-web",
+    "sourceHash": "8d76c9957558e9d2fc75e978fc90bf2e629bbfeba86a158a4df3a18d0bb869a9",
+    "retrievedAt": "2026-09-15T07:00:09.045993+00:00",
+    "lastVerified": "2026-09-15",
     "features": [
-      "90% financing coverage from Corporation",
-      "Direct disbursement through accredited channel partner",
-      "0.5% interest rebate for female borrowers",
-      "Flexible quarterly or monthly repayment"
+      "NSFDC provides loans up to 90% of the Project Cost with a maximum amount of up to ₹ 1.25 lakh per unit.",
+      "NSFDC charges 2.5% from the SCAs/CAs, which in turn shall charge 6.5% from the Beneficiaries.",
+      "To be repaid in quarterly instalments within a maximum period of three years from the date of disbursement, including a "
+    ],
+    "eligibleBeneficiaryCategories": [
+      "SC"
     ]
   },
   {
-    "id": "sch_nbcfdc_term",
-    "code": "NBCFDC-TLS-02",
-    "name": "NBCFDC General Term Loan Scheme",
-    "shortName": "Term Loan Scheme",
+    "id": "sch_nsfdc_tls",
+    "code": "NSFDC-TLS-02",
+    "name": "Term Loan",
+    "shortName": "Term Loan",
     "category": "term_loan",
-    "tagline": "Substantial capital financing for viable enterprise creation, expansion, and machinery",
-    "description": "General Term Loan Scheme provides term credit assistance for commercially viable projects in manufacturing, processing, small transport, and service sectors up to ₹50 Lakh.",
-    "objective": "To assist target group individuals in establishing robust self-employment ventures and scaling up micro-enterprises into stable small enterprises.",
-    "targetGroup": "Target group entrepreneurs with annual family income up to ₹5,00,000 seeking long-term equipment/project finance.",
-    "minLoanAmount": 150000,
-    "maxLoanAmount": 5000000,
+    "tagline": "Capital finance for SC self-employment projects up to Rs 50 lakh",
+    "description": "NSFDC provides term loans up to 90% of the project cost, above ₹ 1.25 lakh and up to ₹ 45 lakh per unit. NSFDC shall charge interest @ 4% from the SCAs / CAs, which in turn shall charge 8% from the beneficiaries.",
+    "objective": "Provision of concessional credit to Scheduled Caste beneficiaries for self-employment and education.",
+    "targetGroup": "Scheduled Caste (SC) beneficiaries as defined under Article 341 of the Constitution of India.",
+    "minLoanAmount": 125000,
+    "maxLoanAmount": 4500000,
     "interestRateMin": 7.0,
     "interestRateMax": 8.0,
     "femaleInterestConcession": 0.5,
@@ -60,194 +75,280 @@
     "tenureMaxMonths": 84,
     "moratoriumMinMonths": 3,
     "moratoriumMaxMonths": 6,
-    "coveragePercent": 85,
-    "maxAnnualIncome": 500000,
-    "targetBeneficiaries": ["OBC Entrepreneurs", "Small Business Owners", "Skilled Technicians", "Transport Operators"],
-    "eligibleActivities": ["Light Manufacturing Units", "Agro-Processing & Cold Storage", "Auto Service Centers", "Diagnostic Labs", "Commercial Vehicles"],
-    "requiredDocuments": [
-      "Project Report / Business Plan",
-      "Quotations for Machinery/Vehicles",
-      "Identity and Address Proof",
-      "Income Verification Certificate",
-      "Caste Certificate (issued by competent authority)",
-      "Lease Deed or Ownership of Business Premises"
-    ],
-    "eligiblePartnerTypes": ["SCA", "PSB", "RRB"],
-    "source": "NBCFDC Policy Guidelines",
-    "sourceUrl": "https://www.nbcfdc.gov.in",
-    "verificationStatus": "VERIFIED",
-    "lastVerified": "2026-02-15",
-    "features": [
-      "Coverage up to 85% of total project cost",
-      "6 months moratorium on principal repayment",
-      "Tenure extending up to 7 years",
-      "Reduced rate of interest for women entrepreneurs"
-    ]
-  },
-  {
-    "id": "sch_nbcfdc_edu",
-    "code": "NBCFDC-EDU-03",
-    "name": "NBCFDC Concessional Education Loan Scheme",
-    "shortName": "Education Loan Scheme",
-    "category": "education",
-    "tagline": "Low-interest educational finance for professional degrees in India and abroad",
-    "description": "Provides highly concessional financial assistance to meritorious target-group students for pursuing approved general, professional, technical, and doctoral degree courses.",
-    "objective": "To empower youth from backward classes to attain higher technical and professional qualifications without crippling debt burdens.",
-    "targetGroup": "Students with annual family income up to ₹5,00,000 who have secured admission to accredited colleges or overseas institutions.",
-    "minLoanAmount": 50000,
-    "maxLoanAmount": 2000000,
-    "interestRateMin": 4.0,
-    "interestRateMax": 4.5,
-    "femaleInterestConcession": 0.5,
-    "tenureMinMonths": 60,
-    "tenureMaxMonths": 120,
-    "moratoriumMinMonths": 6,
-    "moratoriumMaxMonths": 12,
     "coveragePercent": 90,
-    "maxAnnualIncome": 500000,
-    "targetBeneficiaries": ["Undergraduate Students", "Postgraduate Students", "Engineering & Medical Scholars", "Overseas Enrollees"],
-    "eligibleActivities": ["Tuition Fees", "Hostel & Living Expenses", "Books, Equipment & Laptop", "Travel & Visa for Overseas Studies"],
-    "requiredDocuments": [
-      "Offer Letter / Proof of Admission",
-      "Mark sheets of qualifying examinations (10th, 12th, Graduation)",
-      "Fee structure certified by the Institution",
-      "Income Certificate of parents/guardians",
-      "Caste / Community Certificate",
-      "Co-borrower KYC & Bank Statement"
+    "maxAnnualIncome": 0,
+    "targetBeneficiaries": [
+      "Scheduled Castes",
+      "SC Women",
+      "SC Youth",
+      "SC Artisans"
     ],
-    "eligiblePartnerTypes": ["SCA", "PSB", "RRB"],
-    "source": "Ministry of Social Justice & Empowerment / NBCFDC",
-    "sourceUrl": "https://www.nbcfdc.gov.in",
+    "eligibleActivities": [
+      "As notified by NSFDC — refer official source"
+    ],
+    "requiredDocuments": [
+      "Caste Certificate (SC)",
+      "Aadhaar Card",
+      "Income Certificate",
+      "Bank Account"
+    ],
+    "eligiblePartnerTypes": [
+      "SCA",
+      "PSB",
+      "RRB"
+    ],
+    "operationalStatus": "ACTIVE",
     "verificationStatus": "VERIFIED",
-    "lastVerified": "2026-03-05",
+    "source": "National Scheduled Castes Finance and Development Corporation (NSFDC)",
+    "sourceUrl": "https://nsfdc.nic.in/scheme",
+    "sourceType": "official-web",
+    "sourceHash": "8d76c9957558e9d2fc75e978fc90bf2e629bbfeba86a158a4df3a18d0bb869a9",
+    "retrievedAt": "2026-09-15T07:00:09.045993+00:00",
+    "lastVerified": "2026-09-15",
     "features": [
-      "Special concessional rate of 4.0% for female students",
-      "Moratorium covers entire course duration + up to 12 months",
-      "Covers up to ₹15 Lakh for domestic and ₹20 Lakh for foreign studies",
-      "Repayment window up to 10 years after moratorium"
+      "NSFDC provides term loans up to 90% of the project cost, above ₹ 1.25 lakh and up to ₹ 45 lakh per unit.",
+      "NSFDC shall charge interest @ 4% from the SCAs / CAs, which in turn shall charge 8% from the beneficiaries.",
+      "Repaid in quarterly instalments within seven years, including a 6-month moratorium (12 months for plantation and constru"
+    ],
+    "eligibleBeneficiaryCategories": [
+      "SC"
     ]
   },
   {
-    "id": "sch_pmmy_kishore",
-    "code": "PMMY-KISHORE-04",
-    "name": "Pradhan Mantri MUDRA Yojana (Kishore)",
-    "shortName": "Mudra Kishore Loan",
+    "id": "sch_nsfdc_amfy",
+    "code": "NSFDC-AMFY-03",
+    "name": "Aajeevika Micro-Finance Yojana",
+    "shortName": "Aajeevika Micro-Finance Yojana",
+    "category": "microfinance",
+    "tagline": "Need-based micro-finance for SC entrepreneurs through NBFC-MFIs",
+    "description": "NSFDC provides loan up to 90% (i.e. up to ₹ 1.25 lakh) for projects costing up to ₹ 1.40 lakh. NSFDC shall charge interest @ 5% from the NBFC-MFIs, which in turn shall charge 15% from the beneficiaries.",
+    "objective": "Provision of concessional credit to Scheduled Caste beneficiaries for self-employment and education.",
+    "targetGroup": "Scheduled Caste (SC) beneficiaries as defined under Article 341 of the Constitution of India.",
+    "minLoanAmount": 10000,
+    "maxLoanAmount": 125000,
+    "interestRateMin": 15.0,
+    "interestRateMax": 15.0,
+    "femaleInterestConcession": 0.5,
+    "tenureMinMonths": 12,
+    "tenureMaxMonths": 36,
+    "moratoriumMinMonths": 1,
+    "moratoriumMaxMonths": 3,
+    "coveragePercent": 90,
+    "maxAnnualIncome": 0,
+    "targetBeneficiaries": [
+      "Scheduled Castes",
+      "SC Women",
+      "SC Youth",
+      "SC Artisans"
+    ],
+    "eligibleActivities": [
+      "As notified by NSFDC — refer official source"
+    ],
+    "requiredDocuments": [
+      "Caste Certificate (SC)",
+      "Aadhaar Card",
+      "Income Certificate",
+      "Bank Account"
+    ],
+    "eligiblePartnerTypes": [
+      "NBFC_MFI"
+    ],
+    "operationalStatus": "ACTIVE",
+    "verificationStatus": "VERIFIED",
+    "source": "National Scheduled Castes Finance and Development Corporation (NSFDC)",
+    "sourceUrl": "https://nsfdc.nic.in/scheme",
+    "sourceType": "official-web",
+    "sourceHash": "8d76c9957558e9d2fc75e978fc90bf2e629bbfeba86a158a4df3a18d0bb869a9",
+    "retrievedAt": "2026-09-15T07:00:09.045993+00:00",
+    "lastVerified": "2026-09-15",
+    "features": [
+      "NSFDC provides loan up to 90% (i.e. up to ₹ 1.25 lakh) for projects costing up to ₹ 1.40 lakh.",
+      "NSFDC shall charge interest @ 5% from the NBFC-MFIs, which in turn shall charge 15% from the beneficiaries.",
+      "To be repaid in quarterly installments of up to three years from the date of each disbursement, including a 3-month mora"
+    ],
+    "eligibleBeneficiaryCategories": [
+      "SC"
+    ]
+  },
+  {
+    "id": "sch_nsfdc_uny",
+    "code": "NSFDC-UNY-04",
+    "name": "Udyam Nidhi Yojana (UNY)",
+    "shortName": "Udyam Nidhi Yojana (UNY)",
     "category": "business",
-    "tagline": "Mid-tier working capital & equipment loan for expanding small businesses",
-    "description": "Under PMMY Kishore, loans between ₹50,000 and ₹5,00,000 are sanctioned to non-corporate small enterprises looking to acquire inventory, equipment, or machinery.",
-    "objective": "To promote micro enterprise graduation and provide collateral-free institutional credit.",
-    "targetGroup": "Established micro-enterprises and service providers in urban and rural areas.",
-    "minLoanAmount": 50000,
-    "maxLoanAmount": 500000,
-    "interestRateMin": 8.5,
-    "interestRateMax": 10.5,
+    "tagline": "Loan up to Rs 4.5 lakh for small/micro SC activities via Co-op Banks and SFBs",
+    "description": "NSFDC provides loans up to 90% of the project cost i.e. up to ₹ 4.50 lakh. Cooperative Banks/Societies: NSFDC charges 5%, Beneficiary pays 13% .",
+    "objective": "Provision of concessional credit to Scheduled Caste beneficiaries for self-employment and education.",
+    "targetGroup": "Scheduled Caste (SC) beneficiaries as defined under Article 341 of the Constitution of India.",
+    "minLoanAmount": 10000,
+    "maxLoanAmount": 450000,
+    "interestRateMin": 13.0,
+    "interestRateMax": 15.0,
+    "femaleInterestConcession": 0.5,
     "tenureMinMonths": 12,
     "tenureMaxMonths": 60,
     "moratoriumMinMonths": 0,
-    "moratoriumMaxMonths": 6,
-    "coveragePercent": 100,
+    "moratoriumMaxMonths": 3,
+    "coveragePercent": 90,
     "maxAnnualIncome": 0,
-    "targetBeneficiaries": ["Shopkeepers", "Artisans", "Small Manufacturers", "Service Units"],
-    "eligibleActivities": ["Working Capital", "Shop Modernization", "Machinery Purchase", "Inventory Expansion"],
-    "requiredDocuments": [
-      "Business Registration / Udyam Certificate",
-      "Last 6 Months Bank Statement",
-      "Identity and Address Proof of Proprietor/Partners",
-      "Quotation of Machinery / Goods to be purchased"
+    "targetBeneficiaries": [
+      "Scheduled Castes",
+      "SC Women",
+      "SC Youth",
+      "SC Artisans"
     ],
-    "eligiblePartnerTypes": ["PSB", "RRB", "NBFC_MFI"],
-    "source": "MUDRA / Department of Financial Services",
-    "sourceUrl": "https://www.mudra.org.in",
+    "eligibleActivities": [
+      "As notified by NSFDC — refer official source"
+    ],
+    "requiredDocuments": [
+      "Caste Certificate (SC)",
+      "Aadhaar Card",
+      "Income Certificate",
+      "Bank Account"
+    ],
+    "eligiblePartnerTypes": [
+      "COOPERATIVE_BANK",
+      "SMALL_FINANCE_BANK"
+    ],
+    "operationalStatus": "ACTIVE",
     "verificationStatus": "VERIFIED",
-    "lastVerified": "2026-01-20",
+    "source": "National Scheduled Castes Finance and Development Corporation (NSFDC)",
+    "sourceUrl": "https://nsfdc.nic.in/scheme",
+    "sourceType": "official-web",
+    "sourceHash": "8d76c9957558e9d2fc75e978fc90bf2e629bbfeba86a158a4df3a18d0bb869a9",
+    "retrievedAt": "2026-09-15T07:00:09.045993+00:00",
+    "lastVerified": "2026-09-15",
     "features": [
-      "No collateral or third-party guarantee required",
-      "Covered under Credit Guarantee Fund for Micro Units (CGFMU)",
-      "Available across all commercial and rural banks",
-      "Mudra Card provided for flexible working capital withdrawals"
+      "Loans provided up to 90% of project cost (max 4.50 Lakh)",
+      "Cooperative Banks/Societies rate: 13%",
+      "Small Finance Banks rate: 15%",
+      "Repayment period up to 5 years including 3-month moratorium"
+    ],
+    "eligibleBeneficiaryCategories": [
+      "SC"
     ]
   },
   {
-    "id": "sch_nskfdc_green",
-    "code": "NSKFDC-GBS-05",
-    "name": "NSKFDC Green Business & Sanitation Equipment Scheme",
-    "shortName": "Green Business & Sanitation",
-    "category": "green_sanitation",
-    "tagline": "Financial assistance for eco-friendly businesses and mechanized sanitation equipment",
-    "description": "Supports Safai Karamcharis and sanitation workers to adopt green business activities, solar installation, battery-operated e-rickshaws, and mechanized desludging machines.",
-    "objective": "Dignified livelihoods and elimination of manual scavenging through modern mechanized machinery.",
-    "targetGroup": "Safai Karamcharis, manual scavengers, sanitation workers, and their identified dependents.",
+    "id": "sch_nsfdc_els",
+    "code": "NSFDC-ELS-05",
+    "name": "Educational Loan Scheme (ELS)",
+    "shortName": "Educational Loan Scheme (ELS)",
+    "category": "education",
+    "tagline": "Concessional education loan for SC students pursuing professional courses",
+    "description": " ",
+    "objective": "Provision of concessional credit to Scheduled Caste beneficiaries for self-employment and education.",
+    "targetGroup": "Scheduled Caste (SC) beneficiaries as defined under Article 341 of the Constitution of India.",
     "minLoanAmount": 50000,
-    "maxLoanAmount": 1500000,
+    "maxLoanAmount": 4000000,
+    "interestRateMin": 6.5,
+    "interestRateMax": 6.5,
+    "femaleInterestConcession": 0.5,
+    "tenureMinMonths": 60,
+    "tenureMaxMonths": 144,
+    "moratoriumMinMonths": 6,
+    "moratoriumMaxMonths": 12,
+    "coveragePercent": 90,
+    "maxAnnualIncome": 0,
+    "targetBeneficiaries": [
+      "Scheduled Castes",
+      "SC Women",
+      "SC Youth",
+      "SC Artisans"
+    ],
+    "eligibleActivities": [
+      "Engineering (B.Tech / M.Tech)",
+      "Medical (MBBS / MD)",
+      "Management (MBA)",
+      "Biotechnology & Clinical Technology",
+      "Approved Professional Courses in India or Abroad"
+    ],
+    "requiredDocuments": [
+      "Caste Certificate (SC)",
+      "Aadhaar Card",
+      "Income Certificate",
+      "Bank Account"
+    ],
+    "eligiblePartnerTypes": [
+      "SCA",
+      "PSB",
+      "RRB"
+    ],
+    "operationalStatus": "ACTIVE",
+    "verificationStatus": "VERIFIED",
+    "source": "National Scheduled Castes Finance and Development Corporation (NSFDC)",
+    "sourceUrl": "https://nsfdc.nic.in/scheme",
+    "sourceType": "official-web",
+    "sourceHash": "8d76c9957558e9d2fc75e978fc90bf2e629bbfeba86a158a4df3a18d0bb869a9",
+    "retrievedAt": "2026-09-15T07:00:09.045993+00:00",
+    "lastVerified": "2026-09-15",
+    "features": [
+      "Refer official source",
+      "Refer official source",
+      "Refer official source"
+    ],
+    "eligibleBeneficiaryCategories": [
+      "SC"
+    ]
+  },
+  {
+    "id": "sch_nsfdc_suy",
+    "code": "NSFDC-SUY-06",
+    "name": "Swachhta Udyami Yojana (SUY) & Green Business",
+    "shortName": "Swachhta Udyami Yojana",
+    "category": "green_sanitation",
+    "tagline": "Concessional finance for mechanized sanitation equipment and eco-friendly clean energy",
+    "description": "NSFDC provides financial assistance to Scheduled Caste beneficiaries and sanitation workers to acquire mechanized sanitation equipment, e-vehicles, and solar power units.",
+    "objective": "Livelihood support, modernization of sanitation through mechanization, and eco-friendly green entrepreneurship.",
+    "targetGroup": "Scheduled Caste (SC) individuals, sanitation workers, and their identified dependents.",
+    "minLoanAmount": 50000,
+    "maxLoanAmount": 4500000,
     "interestRateMin": 5.0,
     "interestRateMax": 6.0,
     "femaleInterestConcession": 0.5,
     "tenureMinMonths": 24,
-    "tenureMaxMonths": 60,
+    "tenureMaxMonths": 84,
     "moratoriumMinMonths": 3,
     "moratoriumMaxMonths": 6,
     "coveragePercent": 90,
-    "maxAnnualIncome": 350000,
-    "targetBeneficiaries": ["Sanitation Workers", "Manual Scavengers Dependents", "Green Entrepreneurs"],
-    "eligibleActivities": ["Vacuum Suction Desludging Machines", "Battery Operated E-Vehicles", "Waste Segregation Units", "Solar Rooftop Systems"],
-    "requiredDocuments": [
-      "Sanitation Worker Dependent Certificate",
-      "Identity Proof (Aadhaar/Voter ID)",
-      "Driving License (for commercial vehicles)",
-      "Technical quotation for mechanized machinery",
-      "Bank Account details"
-    ],
-    "eligiblePartnerTypes": ["SCA", "PSB", "RRB"],
-    "source": "National Safai Karamcharis Finance & Development Corporation (NSKFDC)",
-    "sourceUrl": "https://nskfdc.nic.in",
-    "verificationStatus": "VERIFIED",
-    "lastVerified": "2026-02-28",
-    "features": [
-      "Subsidized interest rate starting from 5%",
-      "Promotes zero manual hazard and automated sanitation",
-      "Capital subsidy integration available where notified",
-      "Training & technical support through channel partner"
-    ]
-  },
-  {
-    "id": "sch_standup_india",
-    "code": "SUI-GF-06",
-    "name": "Stand-Up India Greenfield Scheme",
-    "shortName": "Stand-Up India",
-    "category": "business",
-    "tagline": "Promoting entrepreneurship among women and SC/ST communities for new ventures",
-    "description": "Facilitates bank loans between ₹10 Lakh and ₹1 Crore to at least one SC or ST borrower and at least one woman borrower per bank branch for setting up greenfield enterprises.",
-    "objective": "To support indigenous and female entrepreneurship in manufacturing, services, agri-allied, or trading sectors.",
-    "targetGroup": "SC/ST and women entrepreneurs aged above 18 years setting up their first enterprise.",
-    "minLoanAmount": 1000000,
-    "maxLoanAmount": 10000000,
-    "interestRateMin": 8.0,
-    "interestRateMax": 9.5,
-    "tenureMinMonths": 36,
-    "tenureMaxMonths": 84,
-    "moratoriumMinMonths": 6,
-    "moratoriumMaxMonths": 18,
-    "coveragePercent": 85,
     "maxAnnualIncome": 0,
-    "targetBeneficiaries": ["Women Entrepreneurs", "SC/ST Founders", "Greenfield Innovators"],
-    "eligibleActivities": ["Manufacturing Plants", "IT & Healthcare Service Centers", "Agri-Processing Units", "Retail Showrooms"],
-    "requiredDocuments": [
-      "Greenfield Project Feasibility Report",
-      "Udyam & GST Registration",
-      "Caste Certificate (for SC/ST) / Identity Proof",
-      "Pan Card & 1-year Bank Statement",
-      "Pollution Control Clearance (if applicable)"
+    "targetBeneficiaries": [
+      "Scheduled Castes",
+      "SC Sanitation Workers",
+      "SC Dependents"
     ],
-    "eligiblePartnerTypes": ["PSB", "RRB"],
-    "source": "Stand-Up India / SIDBI / Ministry of Finance",
-    "sourceUrl": "https://www.standupmitra.in",
+    "eligibleActivities": [
+      "Mechanized Desludging Trucks",
+      "Battery Operated E-Vehicles / Rickshaws",
+      "Solar Power Rooftop & Pumping Units",
+      "Solid Waste Segregation & Processing Machinery"
+    ],
+    "requiredDocuments": [
+      "Caste Certificate (SC issued by competent authority)",
+      "Aadhaar Card / Government Photo ID",
+      "Quotation for Mechanized Equipment or Vehicle",
+      "Bank Account KYC and Cancelled Cheque"
+    ],
+    "eligiblePartnerTypes": [
+      "SCA",
+      "PSB",
+      "RRB"
+    ],
+    "operationalStatus": "ACTIVE",
     "verificationStatus": "VERIFIED",
-    "lastVerified": "2026-03-02",
+    "source": "National Scheduled Castes Finance and Development Corporation (NSFDC)",
+    "sourceUrl": "https://nsfdc.nic.in/scheme",
+    "sourceType": "official-web",
+    "sourceHash": "8d76c9957558e9d2fc75e978fc90bf2e629bbfeba86a158a4df3a18d0bb869a9",
+    "retrievedAt": "2026-09-15T07:00:09.045993+00:00",
+    "lastVerified": "2026-09-15",
     "features": [
-      "Composite loan covering term loan and working capital",
-      "Extended moratorium up to 18 months",
-      "Dedicated handholding support via Lead District Managers",
-      "Guaranteed under Credit Guarantee Scheme for Stand Up India (CGSUI)"
+      "Up to 90% project finance assistance",
+      "Highly concessional 5.0% - 6.0% interest rate",
+      "Supports mechanized sanitation and elimination of hazardous manual cleaning",
+      "Moratorium period up to 6 months"
+    ],
+    "eligibleBeneficiaryCategories": [
+      "SC"
     ]
   }
 ]

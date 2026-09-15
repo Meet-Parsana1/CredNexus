@@ -35,7 +35,15 @@ export function routeAndRankPartners(
 
   return partners
     .map((partner) => {
-      const distance = calculateDistanceKm(userLat, userLng, partner.lat, partner.lng);
+      const hasCoords =
+        partner.lat !== null &&
+        partner.lng !== null &&
+        partner.coordinatePrecision !== 'UNAVAILABLE';
+
+      const distance = hasCoords
+        ? calculateDistanceKm(userLat, userLng, partner.lat as number, partner.lng as number)
+        : null;
+
       const reasons: string[] = [];
 
       // 1. Compatibility check
@@ -53,51 +61,37 @@ export function routeAndRankPartners(
       let routingScore = 0;
 
       // Distance score (max 40 pts)
-      if (distance <= 15) routingScore += 40;
-      else if (distance <= 50) routingScore += 30;
-      else if (distance <= 150) routingScore += 20;
-      else if (distance <= 500) routingScore += 10;
-      else routingScore += 5;
+      if (distance !== null) {
+        if (distance <= 25) routingScore += 40;
+        else if (distance <= 75) routingScore += 30;
+        else if (distance <= 200) routingScore += 20;
+        else routingScore += 10;
+        reasons.push(`Accredited office verified within ${Math.round(distance)} km`);
+      } else {
+        routingScore += 10;
+        reasons.push('Address verified; exact coordinates not published by NSFDC');
+      }
 
-      // State/District proximity bonus (max 20 pts)
+      // State/District proximity bonus (max 30 pts)
       if (selectedState && partner.state.toLowerCase() === selectedState.toLowerCase()) {
-        routingScore += 15;
+        routingScore += 20;
         if (selectedDistrict && partner.district.toLowerCase() === selectedDistrict.toLowerCase()) {
-          routingScore += 5;
+          routingScore += 10;
           reasons.push('Located within your home district');
         } else {
           reasons.push('Located within your home state');
         }
       }
 
-      // Operational Status (max 20 pts)
+      // Operational Status (max 30 pts)
       if (partner.operationalStatus === 'ACTIVE') {
-        routingScore += 20;
+        routingScore += 30;
       } else if (partner.operationalStatus === 'LIMITED') {
-        routingScore += 10;
-        reasons.push('Operational under restricted regional quota');
+        routingScore += 15;
+        reasons.push('Operational under restricted regional allocation');
       } else {
         isCompatible = false;
         reasons.push('Channel Partner is currently inactive for new loan sanctions');
-      }
-
-      // Fund Utilization & NPA Health (max 20 pts)
-      if (partner.npaRiskStatus === 'LOW') {
-        routingScore += 10;
-      } else if (partner.npaRiskStatus === 'MEDIUM') {
-        routingScore += 5;
-      } else {
-        routingScore -= 10;
-        reasons.push('High NPA caution flag on record');
-      }
-
-      if (partner.fundUtilizationRatePercent >= 90) {
-        routingScore += 10;
-        reasons.push('High fund disbursement capacity (>90% utilization)');
-      } else if (partner.fundUtilizationRatePercent >= 75) {
-        routingScore += 7;
-      } else {
-        routingScore += 3;
       }
 
       // Status label
@@ -125,7 +119,12 @@ export function routeAndRankPartners(
       if (!a.isCompatible && b.isCompatible) return 1;
       // Then by routing score descending
       if (b.routingScore !== a.routingScore) return b.routingScore - a.routingScore;
-      // Then by distance ascending
-      return a.distanceKm - b.distanceKm;
+      // Then geocoded before non-geocoded
+      if (a.distanceKm !== null && b.distanceKm === null) return -1;
+      if (a.distanceKm === null && b.distanceKm !== null) return 1;
+      if (a.distanceKm !== null && b.distanceKm !== null) {
+        return a.distanceKm - b.distanceKm;
+      }
+      return 0;
     });
 }

@@ -163,20 +163,31 @@ export default function SchemeDetailPage() {
               </div>
             </div>
 
-            <div className="bg-royal-50/50 rounded-xl p-6 border border-royal-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h3 className="font-semibold text-royal-950">Ready to Apply or Connect with a Partner?</h3>
-                <p className="text-sm text-royal-700">Find accredited channel partners, verify eligibility, or compute EMIs.</p>
-              </div>
-              <div className="flex gap-3">
-                <Link href={`/partners?scheme=${scheme.id}`}>
-                  <Button variant="primary" className="gap-1.5">
-                    <MapPin className="w-4 h-4" /> Locate Partners
-                  </Button>
-                </Link>
-                <Link href={`/eligibility?scheme=${scheme.id}`}>
-                  <Button variant="outline">Check Match</Button>
-                </Link>
+            <div className="bg-royal-50/50 rounded-xl p-6 border border-royal-100 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-bold text-royal-950 text-base">Official Application Route</h3>
+                  <p className="text-xs text-royal-800 mt-1 max-w-2xl leading-relaxed">
+                    Under statutory guidelines, beneficiaries do not submit loan applications directly to NSFDC corporate headquarters. Applications are formally received and processed through accredited State Channelising Agencies (SCAs), Public Sector Banks, and Regional Rural Banks in your state.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  {scheme.sourceUrl && (
+                    <a href={scheme.sourceUrl} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm">
+                        View Official NSFDC Source
+                      </Button>
+                    </a>
+                  )}
+                  <Link href={`/eligibility?scheme=${scheme.id}&amount=${scheme.maxLoanAmount}`}>
+                    <Button variant="outline" size="sm">Check Match</Button>
+                  </Link>
+                  <Link href={`/partners?scheme=${scheme.code}&category=${scheme.category}`}>
+                    <Button variant="primary" size="sm" className="gap-1.5">
+                      <MapPin className="w-4 h-4" /> Locate Channel Partner
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

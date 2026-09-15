@@ -8,6 +8,10 @@ export class SchemeService {
     return this.schemes;
   }
 
+  public static getActiveSchemes(): Scheme[] {
+    return this.schemes.filter((s) => s.operationalStatus === 'ACTIVE' || !s.operationalStatus);
+  }
+
   public static getSchemeById(id: string): Scheme | undefined {
     return this.schemes.find((s) => s.id === id || s.code === id);
   }

@@ -18,7 +18,7 @@ export default function HowItWorksPage() {
     {
       step: '1',
       title: 'Tell Us Your Need',
-      desc: 'Enter your project scope (micro-enterprise, term loan, or higher education) and annual income in the guided wizard.',
+      desc: 'Enter your project scope (micro-enterprise, term loan, or higher education) and annual income in the guided wizard.',    
       icon: Search,
     },
     {
