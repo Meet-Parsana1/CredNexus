@@ -22,6 +22,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           className="w-8 h-8"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
         >
           <path
             d="M14 25 C14 18, 22 17, 28 20 C24 23, 20 25, 20 29 C20 33, 26 34, 30 31"
@@ -59,7 +60,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 
   if (href) {
     return (
-      <Link href={href} className="inline-block transition-opacity hover:opacity-90">
+      <Link href={href} className="inline-block transition-opacity hover:opacity-90" aria-label="CredNexus — Go to homepage">
         {content}
       </Link>
     );

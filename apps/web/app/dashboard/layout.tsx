@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Bookmark, 
@@ -15,7 +15,17 @@ import { useAuth } from '../../lib/store/auth';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const router = useRouter();
+  const { user, isLoaded, logout } = useAuth();
+
+  // Authorization guard: redirect unauthenticated users to login
+  // Wait for isLoaded to avoid flash-redirect while localStorage is being hydrated
+  useEffect(() => {
+    if (isLoaded && !user) {
+      router.replace('/login');
+    }
+  }, [isLoaded, user, router]);
+
 
   const links = [
     { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -24,6 +34,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/applications', label: 'Applications & Guidance', icon: FileText },
     { href: '/dashboard/profile', label: 'My Profile', icon: User },
   ];
+
+  // Show nothing while localStorage is being read (or while redirect is in progress)
+  if (!isLoaded || !user) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-royal-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 lg:py-12">

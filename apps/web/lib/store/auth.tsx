@@ -6,6 +6,8 @@ import { UserProfile, UserApplication } from '../types';
 interface AuthContextType {
   user: UserProfile | null;
   isAdmin: boolean;
+  /** True once localStorage hydration is complete. Use this before redirecting unauthenticated users. */
+  isLoaded: boolean;
   login: (email: string, role?: 'user' | 'admin') => void;
   logout: () => void;
   toggleSaveScheme: (schemeId: string) => void;
@@ -54,6 +56,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(DEFAULT_USER);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [applications, setApplications] = useState<UserApplication[]>(DEFAULT_APPLICATIONS);
 
   useEffect(() => {
@@ -74,6 +77,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setApplications(JSON.parse(storedApps));
       } catch {}
     }
+    // Mark hydration as complete — guards can now safely redirect
+    setIsLoaded(true);
   }, []);
 
   const login = (email: string, role: 'user' | 'admin' = 'user') => {
@@ -137,6 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isAdmin,
+        isLoaded,
         login,
         logout,
         toggleSaveScheme,

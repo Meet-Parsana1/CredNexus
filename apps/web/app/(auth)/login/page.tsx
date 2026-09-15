@@ -15,9 +15,24 @@ export default function LoginPage() {
   const [email, setEmail] = useState('ramesh.patel@example.com');
   const [password, setPassword] = useState('demo1234');
   const [selectedRole, setSelectedRole] = useState<'user' | 'admin'>('user');
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const validate = (): boolean => {
+    const newErrors: { email?: string; password?: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+    if (!password || password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     login(email, selectedRole);
     if (selectedRole === 'admin') {
       router.push('/admin');
@@ -25,6 +40,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   };
+
 
   const handleQuickDemo = (role: 'user' | 'admin') => {
     setSelectedRole(role);
@@ -82,31 +98,49 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label htmlFor="login-email" className="block text-xs font-semibold text-slate-700 mb-1">
                 Email Address
               </label>
               <div className="relative">
                 <input
+                  id="login-email"
                   type="email"
+                  autoComplete="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-royal-500"
+                  onChange={(e) => { setEmail(e.target.value); setErrors((prev) => ({ ...prev, email: undefined })); }}
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'login-email-error' : undefined}
+                  className={`w-full text-xs p-2.5 rounded-xl border focus:outline-none focus:ring-1 focus:ring-royal-500 ${errors.email ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
                 />
               </div>
+              {errors.email && (
+                <p id="login-email-error" role="alert" className="mt-1 text-[11px] text-red-600 font-medium">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label htmlFor="login-password" className="block text-xs font-semibold text-slate-700 mb-1">
                 Password
               </label>
               <input
+                id="login-password"
                 type="password"
+                autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-royal-500"
+                onChange={(e) => { setPassword(e.target.value); setErrors((prev) => ({ ...prev, password: undefined })); }}
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? 'login-password-error' : undefined}
+                className={`w-full text-xs p-2.5 rounded-xl border focus:outline-none focus:ring-1 focus:ring-royal-500 ${errors.password ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
               />
+              {errors.password && (
+                <p id="login-password-error" role="alert" className="mt-1 text-[11px] text-red-600 font-medium">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <div>

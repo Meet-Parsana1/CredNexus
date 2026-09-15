@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   ShieldAlert, 
   Layers, 
@@ -19,7 +19,16 @@ import { useAuth } from '../../lib/store/auth';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const router = useRouter();
+  const { isLoaded, isAdmin, logout } = useAuth();
+
+  // Authorization guard: only admin role may access the admin portal
+  useEffect(() => {
+    if (isLoaded && !isAdmin) {
+      router.replace('/dashboard');
+    }
+  }, [isLoaded, isAdmin, router]);
+
 
   const navLinks = [
     { href: '/admin', label: 'Admin Metrics', icon: Activity },
@@ -31,6 +40,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin/data-sources', label: 'Data Ingestion & Sync', icon: Database },
     { href: '/admin/system', label: 'System Health', icon: Cpu },
   ];
+
+  // Show spinner while auth is hydrating or while redirect is in flight
+  if (!isLoaded || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-saffron-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 py-8 lg:py-12">
